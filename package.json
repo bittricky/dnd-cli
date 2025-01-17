@@ -1,0 +1,40 @@
+{
+	"name": "dnd-cli",
+	"description": "Interactive Command Line tool for Dungeons and Dragons",
+	"version": "0.0.1",
+	"license": "MIT",
+	"type": "module",
+	"bin": {
+		"dnd-cli": "index.js",
+		"dnd": "index.js"
+	},
+	"author": {
+		"name": "Mitul Patel",
+		"email": "me@mitulpa.tel",
+		"url": "https://mitulpa.tel"
+	},
+	"keywords": [
+		"dnd-cli",
+		"Mitul Patel"
+	],
+	"files": [
+		"index.js",
+		"utils"
+	],
+	"scripts": {
+		"format": "prettier --write \"./**/*.{js,json}\""
+	},
+	"dependencies": {
+		"chalk": "^5.4.1",
+		"cli-alerts": "^2.0.0",
+		"cli-handle-error": "^4.4.0",
+		"cli-handle-unhandled": "^1.1.1",
+		"cli-meow-help": "^4.0.0",
+		"cli-welcome": "^3.0.0",
+		"get-package-json-file": "^2.0.0",
+		"meow": "^13.2.0"
+	},
+	"devDependencies": {
+		"prettier": "^3.4.2"
+	}
+}
