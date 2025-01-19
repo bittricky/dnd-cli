@@ -1,198 +1,152 @@
 # D&D CLI Tool
 
-An offline, cross-platform command-line toolkit for Dungeon Masters and Players running D&D 5th Edition (5e) campaigns. This tool provides essential utilities for character management, encounter building, and game mechanics.
+> Create stories together—Dungeons & Dragons is a collaborative way to bring out your imagination.
 
-## Supported D&D Editions & Sourcebooks
-
-This tool is designed for **D&D 5th Edition (5e)** and includes content from:
-
-### Core Rulebooks
-- Player's Handbook (PHB)
-- Dungeon Master's Guide (DMG)
-- Monster Manual (MM)
-
-### Expansions
-- Sword Coast Adventurer's Guide (SCAG)
-- Volo's Guide to Monsters (VGM)
-- Xanathar's Guide to Everything (XGE)
-- Mordenkainen's Tome of Foes (MTF)
-- Eberron: Rising from the Last War (ERLW)
-- Tasha's Cauldron of Everything (TCE)
-- Van Richten's Guide to Ravenloft (VRGR)
-- Fizban's Treasury of Dragons (FTD)
-- Strixhaven: A Curriculum of Chaos (SCC)
-
-Users can enable/disable specific sourcebooks to customize their experience.
-
-## Installation
-
-### Prerequisites
-- Node.js (v16.0.0 or higher)
-- npm (v7.0.0 or higher)
-
-### Steps
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/dnd-cli.git
-   cd dnd-cli
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Make the CLI globally accessible (optional):
-   ```bash
-   npm link
-   ```
+A comprehensive command-line interface tool for Dungeons & Dragons 5th Edition game masters and players. Built with functional programming principles for reliability and maintainability.
 
 ## Features
 
-### 1. Character Generator
-Create complete character sheets with expanded options from all supported sourcebooks:
-- All official races and subraces
-- All classes including Artificer
-- All official subclasses
-- Variant features (e.g., Custom Lineage from Tasha's)
-- Configurable sourcebook selection
-- Random or chosen attributes
-- Ability score generation (4d6 drop lowest)
-- Character export to text files
+### Character Tools
+- **Character Generator**: Create new player characters with randomly generated stats
+- **NPC Generator**: Generate detailed NPCs with personalities, backgrounds, and motivations
+- **Initiative Tracker**: Manage combat turns and track initiative order with multiple tracking modes
+
+### Game Management
+- **Dice Roller**: Roll any combination of dice with modifiers (e.g., 2d6+3)
+- **Loot Generator**: Generate treasure hoards and magic items appropriate for any challenge rating
+
+### Atmosphere & Story
+- **Weather Generator**: Create realistic weather conditions for different climates and seasons
+- **Tarokka Reading**: Perform card readings using the Tarokka deck (standard and custom readings)
+- **Wild Magic Effects**: Generate Wild Magic Surge effects with various trigger methods (Standard, Escalating, Spell-Level, Critical)
+
+## Installation
 
 ```bash
-# Access via menu or direct command
-dnd character
-```
+# Clone the repository
+git clone https://github.com/bittricky/dnd-cli.git
 
-### 2. NPC Generator
-Quick NPC generation with expanded options:
-- 35+ NPC classes/templates
-- Stat blocks from various sourcebooks
-- Personality traits and backgrounds
-- Specialized variants (e.g., sidekicks from Tasha's)
+# Install dependencies
+cd dnd-cli
+npm install
 
-```bash
-dnd npc
-```
-
-### 3. Dice Roller
-Versatile dice rolling system:
-- Support for all standard dice (d4, d6, d8, d10, d12, d20, d100)
-- Multiple dice rolls
-- Advantage/Disadvantage support
-- Custom modifiers
-
-```bash
-dnd dice
-```
-
-### 4. Encounter Calculator
-Calculate encounter difficulty using expanded monster options:
-- Party size and levels
-- Monster CR and quantity
-- Extended monster list from all sourcebooks
-- XP thresholds and multipliers
-
-```bash
-dnd encounter
-```
-
-### 5. Loot Generator
-Generate treasure using expanded item tables:
-- CR-appropriate rewards
-- Magic items from all sourcebooks
-- Setting-specific items (e.g., Eberron's Dragonshards)
-- Individual or hoard treasure options
-
-```bash
-dnd loot
-```
-
-### 6. Initiative Roller
-Handle combat initiative with:
-- Bulk roll for multiple creatures
-- Initiative tracking
-- Sort order display
-- Support for group initiative variants
-
-```bash
-dnd initiative
-```
-
-### 7. Tarokka Card Game
-Full implementation of the Curse of Strahd Tarokka deck:
-- High deck and common deck support
-- Card reading simulation
-- Integration with Van Richten's Guide content
-- Fortune telling interpretations
-
-```bash
-dnd tarokka
-```
-
-### 8. Wild Magic Effects
-Expanded Wild Magic surge effects:
-- PHB Wild Magic table
-- Additional effects from supplements
-- Custom table support
-- Automated effect resolution
-
-```bash
-dnd wildmagic
+# Link for development
+npm link
 ```
 
 ## Usage
 
-### Interactive Mode
-1. Start the interactive menu:
-   ```bash
-   dnd
-   ```
-2. Use arrow keys to navigate
-3. Press Enter to select an option
-4. Follow the prompts for each feature
-
-### Direct Commands
-Access features directly using subcommands:
 ```bash
-dnd character   # Character generator
-dnd dice        # Dice roller
-dnd encounter   # Encounter calculator
-# ... etc
+# Start the interactive CLI
+dnd-cli
+
+# Or use the shorter alias
+dnd
 ```
 
-### Sourcebook Configuration
-- Enable/disable specific sourcebooks through the menu
-- Filter available options based on enabled books
-- Save preferences for future sessions
+## Commands
 
-## Data Storage
+### Character Generator
+Generate a new player character with random stats:
+- Rolls ability scores using 4d6 drop lowest
+- Calculates ability modifiers
+- Generates basic character stats
+- Saves character sheets for future reference
 
-- Character sheets are saved in the `./characters` directory
-- All data is stored locally - no internet connection required
-- Files are saved in human-readable text format
-- Optional JSON export for programmatic use
+### NPC Generator
+Create detailed NPCs with:
+- Personality traits, ideals, bonds, and flaws
+- Physical appearance and mannerisms
+- Background and occupation
+- Motivations and goals
+- Save NPC details for future use
 
-## Contributing
+### Dice Roller
+Roll any combination of dice:
+- Supports standard dice (d4, d6, d8, d10, d12, d20, d100)
+- Add/subtract modifiers
+- Roll with advantage/disadvantage
+- Roll multiple dice at once
+
+### Loot Generator
+Generate treasure appropriate for any challenge rating:
+- Individual treasure drops
+- Hoard treasure
+- Magic items by rarity
+- Calculate total value in gold
+
+### Initiative Tracker
+Track combat with multiple variants:
+- **Standard**: Traditional d20 + DEX modifier
+- **Advantage**: Support for features like Alert feat
+- **Group**: Roll once for each type of creature
+- **Speed Factor**: Modified initiative based on action type and weapon size
+Features include:
+- Add/remove combatants dynamically
+- Track conditions and durations
+- Automatic condition cleanup
+- Combat round management
+
+### Weather Generator
+Create weather conditions with:
+- Temperature based on climate and season
+- Precipitation and wind conditions
+- Special weather events
+- Seasonal effects
+
+### Tarokka Reading
+Perform card readings using the Tarokka deck:
+- Full readings with High and Common decks
+- Custom table support
+- Save and load custom card meanings
+- Multiple reading types (single card, three-card spread, full reading)
+
+### Wild Magic Effects
+Generate Wild Magic Surge effects with multiple trigger methods:
+- **Standard**: Classic 1-in-20 chance
+- **Escalating**: Increasing probability after each non-surge
+- **Spell-Level**: Surge chance based on spell level
+- **Critical**: Surge on natural 1s or 20s
+Features include:
+- PHB and Tasha's Cauldron effects
+- Custom effect table support
+- Surge tracking and statistics
+- Save and load custom tables
+
+## Development
+
+The project follows functional programming principles:
+- Pure functions for predictable behavior
+- Immutable state management
+- Clear separation of concerns
+- Modular command structure
+
+### Project Structure
+```
+dnd-cli/
+├── src/
+│   ├── commands/        # Individual command implementations
+│   ├── data/           # Game data and tables
+│   └── menu.js         # Main menu interface
+├── test/               # Test files
+└── custom-tables/      # User-created custom tables (gitignored)
+```
+
+### Contributing
 
 This project follows the [Trunk Based Development](https://trunkbaseddevelopment.com/) workflow.
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Write tests for your changes
+4. Commit your changes (`git commit -m 'Add some amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Acknowledgments
-
-- Based on official D&D 5e ruleset by Wizards of the Coast
-- Inspired by various D&D tools and utilities in the community
-
 ## Disclaimer
 
-This tool is a fan-made project and is not affiliated with, endorsed, sponsored, or specifically approved by [Wizards of the Coast LLC](https://company.wizards.com/en). Dungeons & Dragons and D&D are trademarks of Wizards of the Coast LLC.
+This tool is a fan-made project and is not affiliated with, endorsed, sponsored, or specifically approved by [Wizards of the Coast LLC](https://company.wizards.com/en). Dungeons & Dragons are trademarks of Wizards of the Coast LLC.
