@@ -1,6 +1,6 @@
 # D&D CLI Tool
 
-> Create stories together—Dungeons & Dragons is a collaborative way to bring out your imagination offline or online.
+> Create your own stories together — Dungeons & Dragons is a collaborative way to bring out your imagination offline or online.
 
 A comprehensive command-line interface tool for Dungeons & Dragons 5th Edition game masters and players. Built with functional programming principles for reliability and maintainability.
 
