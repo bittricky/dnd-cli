@@ -14,7 +14,12 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
-    "format": "prettier --write \"./**/*.{js,json}\""
+    "format": "prettier --write \"./**/*.{js,json}\"",
+    "prepublishOnly": "pnpm test",
+		"publish:patch": "pnpm version patch && pnpm publish",
+		"publish:minor": "pnpm version minor && pnpm publish",
+		"publish:major": "pnpm version major && pnpm publish",
+    "publish:pre": "pnpm version prerelease && pnpm publish"
   },
   "keywords": [
     "dnd",
