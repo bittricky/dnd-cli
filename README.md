@@ -128,7 +128,8 @@ dnd-cli/
 │   ├── commands/        # Individual command implementations
 │   ├── data/           # Game data and tables
 │   └── menu.js         # Main menu interface
-├── test/               # Test files
+├── test/# Test files
+├── utils/              # Utility files
 └── custom-tables/      # User-created custom tables (gitignored)
 ```
 
