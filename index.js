@@ -7,15 +7,27 @@
  * @author Mitul Patel <https://mitulpa.tel>
  */
 
-import cli from './utils/cli.js';
 import init from './utils/init.js';
+import mainMenu from './src/menu.js';
+import cli from './utils/cli.js';
 import log from './utils/log.js';
 
 const { flags, input, showHelp } = cli;
 const { clear, debug } = flags;
 
 (async () => {
-	await init({ clear });
-	debug && log(flags);
-	input.includes(`help`) && showHelp(0);
+	try {
+		await init({ clear });
+		debug && log(flags);
+
+		if (input.includes('help')) {
+			showHelp(0);
+			return;
+		}
+
+		await mainMenu();
+	} catch (error) {
+		console.error('An error occurred:', error);
+		process.exit(1);
+	}
 })();
