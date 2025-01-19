@@ -70,3 +70,16 @@ assets/img/.DS_Store
 
 # VSCode related files #
 # .vscode
+
+# CLI Generated Files #
+######################
+/custom-tables/
+/characters/
+/npcs/
+/saved-encounters/
+/saved-initiatives/
+/saved-tables/
+/output/
+*.json
+!package*.json
+!**/data/*.json
