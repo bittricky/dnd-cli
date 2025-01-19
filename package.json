@@ -15,10 +15,20 @@
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "prepublishOnly": "pnpm test",
-		"publish:patch": "pnpm version patch && pnpm publish",
-		"publish:minor": "pnpm version minor && pnpm publish",
-		"publish:major": "pnpm version major && pnpm publish",
+    "publish:patch": "pnpm version patch && pnpm publish",
+    "publish:minor": "pnpm version minor && pnpm publish",
+    "publish:major": "pnpm version major && pnpm publish",
     "publish:pre": "pnpm version prerelease && pnpm publish"
+  },
+  "prettier": {
+    "overrides": [
+      {
+        "files": "package.json",
+        "options": {
+          "parser": "json-stringify"
+        }
+      }
+    ]
   },
   "keywords": [
     "dnd",

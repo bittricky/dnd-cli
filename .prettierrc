@@ -1,0 +1,12 @@
+{
+  "overrides": [
+    {
+      "files": "package.json",
+      "options": {
+        "parser": "json-stringify",
+        "useTabs": false,
+        "tabWidth": 2
+      }
+    }
+  ]
+}
