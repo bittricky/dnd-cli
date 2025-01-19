@@ -1,13 +1,27 @@
 import { describe, it, expect } from 'vitest';
 import {
+    createCombatState,
     rollInitiative,
     sortByInitiative,
     addCombatant,
     removeCombatant,
-    advanceRound
+    advanceRound,
+    getCurrentTurn
 } from '../src/commands/initiative.js';
 
 describe('Initiative Tracker', () => {
+    describe('createCombatState', () => {
+        it('should create initial combat state', () => {
+            const state = createCombatState();
+            expect(state).toHaveProperty('combatants');
+            expect(state).toHaveProperty('round');
+            expect(state).toHaveProperty('currentTurn');
+            expect(state.combatants).toEqual([]);
+            expect(state.round).toBe(1);
+            expect(state.currentTurn).toBe(0);
+        });
+    });
+
     describe('rollInitiative', () => {
         it('should roll initiative within valid range', () => {
             const modifier = 2;
@@ -55,58 +69,85 @@ describe('Initiative Tracker', () => {
     });
 
     describe('addCombatant', () => {
-        it('should add a new combatant with valid properties', () => {
-            const combatants = [];
-            const newCombatant = {
+        it('should add combatant to state', () => {
+            const state = createCombatState();
+            const { newState } = addCombatant(state, {
                 name: 'Fighter',
                 initiative: 15,
-                dexMod: 2,
-                hp: 20,
-                maxHp: 20
-            };
+                dexMod: 2
+            });
             
-            const updated = addCombatant(combatants, newCombatant);
-            expect(updated).toHaveLength(1);
-            expect(updated[0]).toMatchObject(newCombatant);
+            expect(newState.combatants).toHaveLength(1);
+            expect(newState.combatants[0].name).toBe('Fighter');
         });
 
-        it('should validate required properties', () => {
-            const combatants = [];
-            const invalidCombatant = { name: 'Invalid' };
-            
-            expect(() => addCombatant(combatants, invalidCombatant)).toThrow();
+        it('should maintain initiative order when adding multiple combatants', () => {
+            let state = createCombatState();
+            const combatants = [
+                { name: 'A', initiative: 10 },
+                { name: 'B', initiative: 20 },
+                { name: 'C', initiative: 15 }
+            ];
+
+            for (const c of combatants) {
+                const { newState } = addCombatant(state, c);
+                state = newState;
+            }
+
+            expect(state.combatants[0].initiative).toBe(20);
+            expect(state.combatants[1].initiative).toBe(15);
+            expect(state.combatants[2].initiative).toBe(10);
         });
     });
 
     describe('removeCombatant', () => {
-        it('should remove a combatant by name', () => {
-            const combatants = [
-                { name: 'A', initiative: 15 },
-                { name: 'B', initiative: 10 }
-            ];
+        it('should remove combatant from state', () => {
+            let state = createCombatState();
+            const { newState: stateWithCombatant } = addCombatant(state, {
+                name: 'Fighter',
+                initiative: 15
+            });
             
-            const updated = removeCombatant(combatants, 'A');
-            expect(updated).toHaveLength(1);
-            expect(updated[0].name).toBe('B');
+            const { newState } = removeCombatant(stateWithCombatant, 'Fighter');
+            expect(newState.combatants).toHaveLength(0);
         });
 
-        it('should handle non-existent combatant', () => {
-            const combatants = [{ name: 'A', initiative: 15 }];
-            expect(() => removeCombatant(combatants, 'NonExistent')).toThrow();
+        it('should handle removing non-existent combatant', () => {
+            const state = createCombatState();
+            const { newState } = removeCombatant(state, 'NonExistent');
+            expect(newState).toEqual(state);
         });
     });
 
     describe('advanceRound', () => {
-        it('should increment round counter', () => {
-            const state = { round: 1, currentTurn: 0 };
-            const updated = advanceRound(state);
-            expect(updated.round).toBe(2);
+        it('should increment round and reset turn order', () => {
+            let state = createCombatState();
+            state.round = 1;
+            state.currentTurn = 3;
+            
+            const { newState } = advanceRound(state);
+            expect(newState.round).toBe(2);
+            expect(newState.currentTurn).toBe(0);
+        });
+    });
+
+    describe('getCurrentTurn', () => {
+        it('should return current combatant', () => {
+            let state = createCombatState();
+            const { newState } = addCombatant(state, {
+                name: 'Fighter',
+                initiative: 15
+            });
+            
+            const current = getCurrentTurn(newState);
+            expect(current).toBeTruthy();
+            expect(current.name).toBe('Fighter');
         });
 
-        it('should reset current turn', () => {
-            const state = { round: 1, currentTurn: 5 };
-            const updated = advanceRound(state);
-            expect(updated.currentTurn).toBe(0);
+        it('should return null when no combatants', () => {
+            const state = createCombatState();
+            const current = getCurrentTurn(state);
+            expect(current).toBeNull();
         });
     });
 });

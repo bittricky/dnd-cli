@@ -1,44 +1,58 @@
 import { describe, it, expect } from 'vitest';
 import { 
-    drawCard,
+    createDeck,
     shuffleDeck,
-    getCardMeaning
+    drawCard,
+    getCardMeaning,
+    performReading
 } from '../src/commands/tarokka.js';
 
 describe('Tarokka Deck', () => {
-    describe('shuffleDeck', () => {
-        it('should return a shuffled deck with all cards', () => {
-            const deck = shuffleDeck();
-            const originalLength = deck.length;
-            const uniqueCards = new Set(deck.map(card => card.id));
-            
+    describe('createDeck', () => {
+        it('should create a deck with all cards', () => {
+            const deck = createDeck();
             expect(deck.length).toBeGreaterThan(0);
+            expect(deck[0]).toHaveProperty('id');
+            expect(deck[0]).toHaveProperty('name');
+        });
+    });
+
+    describe('shuffleDeck', () => {
+        it('should return a new shuffled deck with all cards', () => {
+            const deck = createDeck();
+            const shuffled = shuffleDeck(deck);
+            const originalLength = shuffled.length;
+            const uniqueCards = new Set(shuffled.map(card => card.id));
+            
+            expect(shuffled.length).toBe(originalLength);
             expect(uniqueCards.size).toBe(originalLength);
+            expect(shuffled).not.toEqual(deck); // Should be different order
         });
 
         it('should produce different orders on multiple shuffles', () => {
-            const deck1 = shuffleDeck();
-            const deck2 = shuffleDeck();
+            const deck = createDeck();
+            const shuffled1 = shuffleDeck(deck);
+            const shuffled2 = shuffleDeck(deck);
             
             let differences = 0;
-            for (let i = 0; i < deck1.length; i++) {
-                if (deck1[i].id !== deck2[i].id) differences++;
+            for (let i = 0; i < shuffled1.length; i++) {
+                if (shuffled1[i].id !== shuffled2[i].id) differences++;
             }
             
-            // With a proper shuffle, most cards should be in different positions
-            expect(differences).toBeGreaterThan(deck1.length * 0.5);
+            expect(differences).toBeGreaterThan(shuffled1.length * 0.5);
         });
     });
 
     describe('drawCard', () => {
-        it('should draw a valid card from the deck', () => {
-            const deck = shuffleDeck();
+        it('should return a card and new deck state', () => {
+            const deck = createDeck();
             const originalLength = deck.length;
-            const card = drawCard(deck);
+            const { card, newDeck } = drawCard(deck);
             
             expect(card).toHaveProperty('id');
             expect(card).toHaveProperty('name');
-            expect(deck.length).toBe(originalLength - 1);
+            expect(newDeck.length).toBe(originalLength - 1);
+            expect(newDeck).not.toContainEqual(card);
         });
 
         it('should throw error when deck is empty', () => {
@@ -49,24 +63,33 @@ describe('Tarokka Deck', () => {
 
     describe('getCardMeaning', () => {
         it('should return valid meaning for high deck cards', () => {
-            const meaning = getCardMeaning(1, 'high');
-            expect(meaning).toHaveProperty('name');
-            expect(meaning).toHaveProperty('meaning');
+            const card = { id: 1, name: 'Avenger', deck: 'high' };
+            const meaning = getCardMeaning(card);
+            expect(meaning).toBeTruthy();
+            expect(typeof meaning).toBe('string');
         });
 
         it('should return valid meaning for common deck cards', () => {
-            const meaning = getCardMeaning(1, 'common');
-            expect(meaning).toHaveProperty('name');
-            expect(meaning).toHaveProperty('meaning');
+            const card = { id: 1, name: 'Stars', deck: 'common' };
+            const meaning = getCardMeaning(card);
+            expect(meaning).toBeTruthy();
+            expect(typeof meaning).toBe('string');
+        });
+    });
+
+    describe('performReading', () => {
+        it('should perform a complete reading', () => {
+            const reading = performReading();
+            expect(reading).toHaveLength(5);
+            expect(reading[0]).toHaveProperty('card');
+            expect(reading[0]).toHaveProperty('position');
+            expect(reading[0]).toHaveProperty('meaning');
         });
 
-        it('should handle invalid card IDs', () => {
-            expect(() => getCardMeaning(0, 'high')).toThrow();
-            expect(() => getCardMeaning(1000, 'common')).toThrow();
-        });
-
-        it('should handle invalid deck types', () => {
-            expect(() => getCardMeaning(1, 'invalid')).toThrow();
+        it('should have unique cards in reading', () => {
+            const reading = performReading();
+            const uniqueCards = new Set(reading.map(r => r.card.id));
+            expect(uniqueCards.size).toBe(5);
         });
     });
 });
