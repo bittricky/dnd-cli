@@ -146,15 +146,15 @@ This project follows the [Trunk Based Development](https://trunkbaseddevelopment
 
 ## Therapeutic Effects
 
-Playing **Dungeons and Dragons (D&D)** as at an any age provides a holistic therapeutic experience that benefits emotional, social, and cognitive well-being. Below is a summary of its key advantages:
+Playing **Dungeons and Dragons (D&D)** at an any age provides a holistic therapeutic experience that benefits emotional, social, and cognitive well-being. Below is a summary of its key advantages:
 
 ### Emotional Benefits
-- **Self-Expression and Emotional Regulation**: Role-playing allows individuals to safely explore emotions, improving emotional resilience and offering an outlet for stress relief.
+- **Self-Expression and Emotional Regulation**: Role-playing allows individuals to safely explore their own personality traits, emotions, improving emotional resilience and offering an outlet for stress relief.
 - **Confidence Building**: Making decisions and solving challenges within the game fosters a sense of accomplishment and self-assurance.
 - **Stress Reduction**: The immersive, creative nature of the game provides healthy escapism, helping to alleviate daily stressors.
 
 ### Social Benefits
-- **Improved Social Skills**: Encourages teamwork, communication, and empathy, offering a structured way to practice these essential interpersonal abilities.
+- **Improved Social Skills**: Encourages teamwork, communication, and empathy, offering a structured way to practice these essential interpersonal abilities as you explore different situations of morality.
 - **Community and Belonging**: Playing in a group fosters connection and reduces feelings of loneliness, creating a sense of camaraderie and mutual support.
 - **Conflict Resolution**: Engaging in cooperative storytelling enhances the ability to navigate disagreements constructively.
 
@@ -163,11 +163,11 @@ Playing **Dungeons and Dragons (D&D)** as at an any age provides a holistic ther
 - **Creativity**: Storytelling and character development stimulate imagination, fostering mental flexibility and innovation.
 - **Enhanced Executive Function**: Keeping track of character stats, planning strategies, and solving puzzles bolster memory and focus.
 
-### Benefits for Mental Health
-D&D is particularly effective for people managing mental health challenges such as anxiety, trauma, or any other form of neurodivergence. It provides:
+### Overall Benefits for Mental Health
+D&D is particularly effective for people managing mental health challenges such as anxiety, trauma, or any other medically recognized form of neurodivergence. It provides:
 - A **judgment-free space** to process emotions and develop coping strategies.
 - A **sense of empowerment** and control through character-driven narratives.
-- Opportunities to practice real-world skills in a low-pressure, stress-free, and imaginative environment.
+- Opportunities to practice real-world skills in a low-pressure, stress-free, and imaginative environment that can be applied in real life setting.
 - A **growing community** to connect with others.
 
 ## Research Support
@@ -176,7 +176,7 @@ D&D is particularly effective for people managing mental health challenges such 
 - **Therapeutic Applications**: As detailed by [Therapy Unlocked](https://therapy-unlocked.com/dungeons-and-dragons-therapy/), D&D offers structured opportunities for emotional exploration, social bonding, and personal growth.
 - [Drama Therapy](https://www.psychologytoday.com/us/blog/mind-matters-menninger/202007/the-power-drama-therapy) also acknowledges D&D's therapeutic potential, highlighting its ability to foster empathy, creativity, and self-awareness.
 
-D&D provides a unique and engaging way for people to address their emotional, social, and cognitive needs. Its provides a combination of storytelling, strategy, and collaboration that creates a powerful tool for personal growth, development of skills to support positive mental health, and opportunities to foster meaningful connections.
+D&D provides a unique and engaging way for people to address their emotional, social, and cognitive needs. Its provides a combination of storytelling, strategy, and collaboration that creates a powerful tool for personal growth, development of skills to support positive mental health, and opportunities to foster meaningful connections. Sometimes it is also nice to not to look at a screen.
 
 ## License
 
