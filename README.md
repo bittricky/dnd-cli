@@ -167,8 +167,8 @@ Playing **Dungeons and Dragons (D&D)** at an any age provides a holistic therape
 D&D is particularly effective for people managing mental health challenges such as anxiety, trauma, or any other medically recognized form of neurodivergence. It provides:
 - A **judgment-free space** to process emotions and develop coping strategies.
 - A **sense of empowerment** and control through character-driven narratives.
-- Opportunities to practice real-world skills in a low-pressure, stress-free, and imaginative environment that can be applied in real life setting.
 - A **growing community** to connect with others.
+- Opportunities to practice real-world skills in a low-pressure, stress-free, and imaginative environment that can be applied in a real-life setting.
 
 ## Research Support
 - **Narrative Therapy and Mental Health**: Studies like the [(Blackmon, 2016; Rosselet & Stauffer, 2013)](https://psycnet.apa.org/record/2013-36489-001) show that role-playing games can empower individuals and build emotional resilience.
