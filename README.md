@@ -146,7 +146,7 @@ This project follows the [Trunk Based Development](https://trunkbaseddevelopment
 
 ## Therapeutic Effects
 
-Playing **Dungeons and Dragons (D&D)** at any age provides a holistic therapeutic experience that benefits emotional, social, and cognitive well-being along side a healthy amount of physical exercise, if sports aren't your thing.
+Playing **Dungeons and Dragons (D&D)** at any age provides a holistic therapeutic experience that benefits emotional, social, and cognitive well-being along side a healthy amount of physical exercise, if traditional sports aren't your thing.
 
 Below is a summary of some of the key advantages:
 
