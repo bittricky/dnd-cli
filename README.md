@@ -176,7 +176,7 @@ D&D is particularly effective for people managing mental health challenges such 
 - **Therapeutic Applications**: As detailed by [Therapy Unlocked](https://therapy-unlocked.com/dungeons-and-dragons-therapy/), D&D offers structured opportunities for emotional exploration, social bonding, and personal growth.
 - [Drama Therapy](https://www.psychologytoday.com/us/blog/mind-matters-menninger/202007/the-power-drama-therapy) also acknowledges D&D's therapeutic potential, highlighting its ability to foster empathy, creativity, and self-awareness.
 
-D&D provides a unique and engaging way for people to address their emotional, social, and cognitive needs. Its provides a combination of storytelling, strategy, and collaboration that creates a powerful tool for personal growth, development of skills to support positive mental health, and opportunities to foster meaningful connections. Sometimes it is also nice to not to look at a screen.
+D&D provides a unique and engaging way for people to address their emotional, social, and cognitive needs. Its provides a combination of storytelling, strategy, and collaboration that creates a powerful tool for personal growth, development of skills to support positive mental health, and opportunities to foster meaningful connections. Sometimes it is also nice to not look at a screen.
 
 ## License
 
