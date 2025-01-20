@@ -146,7 +146,7 @@ This project follows the [Trunk Based Development](https://trunkbaseddevelopment
 
 ## Therapeutic Effects
 
-Playing **Dungeons and Dragons (D&D)** at an any age provides a holistic therapeutic experience that benefits emotional, social, and cognitive well-being. Below is a summary of its key advantages:
+Playing **Dungeons and Dragons (D&D)** at an any age provides a holistic therapeutic experience that benefits emotional, social, and cognitive well-being along side a healthy amount of exercise. Below is a summary of its key advantages:
 
 ### Emotional Benefits
 - **Self-Expression and Emotional Regulation**: Role-playing allows individuals to safely explore their own personality traits, emotions, improving emotional resilience and offering an outlet for stress relief.
