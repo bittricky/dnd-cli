@@ -186,4 +186,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Disclaimer
 
-This tool is a fan-made project and is not affiliated with, endorsed, sponsored, or specifically approved by [Wizards of the Coast LLC](https://company.wizards.com/en). Dungeons & Dragons are trademarks of Wizards of the Coast LLC.
+This tool is a fan-made project and is not affiliated with, endorsed, sponsored, or specifically approved by [Wizards of the Coast LLC](https://company.wizards.com/en). Dungeons & Dragons are trademarks of Wizards of the Coast LLC. In addition, if you are experiencing mental health challenges of any kind please seek out professional medical help from a certified provider who can guide you through the healing process.
