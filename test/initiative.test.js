@@ -1,153 +1,200 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
     createCombatState,
+    rollD20,
     rollInitiative,
-    sortByInitiative,
+    rollSpeedFactorInitiative,
+    createCombatant,
     addCombatant,
     removeCombatant,
-    advanceRound,
-    getCurrentTurn
+    sortCombatants,
+    nextTurn,
+    addCondition,
+    removeCondition,
+    updateConditions,
 } from '../src/commands/initiative.js';
 
 describe('Initiative Tracker', () => {
     describe('createCombatState', () => {
-        it('should create initial combat state', () => {
+        it('should create initial combat state with default variant', () => {
             const state = createCombatState();
-            expect(state).toHaveProperty('combatants');
-            expect(state).toHaveProperty('round');
-            expect(state).toHaveProperty('currentTurn');
-            expect(state.combatants).toEqual([]);
-            expect(state.round).toBe(1);
-            expect(state.currentTurn).toBe(0);
+            expect(state).toEqual({
+                variant: 'STANDARD',
+                combatants: [],
+                round: 1,
+                currentTurn: 0,
+            });
+        });
+
+        it('should create combat state with specified variant', () => {
+            const state = createCombatState('SPEED_FACTOR');
+            expect(state.variant).toBe('SPEED_FACTOR');
+        });
+    });
+
+    describe('rollD20', () => {
+        it('should roll within valid range', () => {
+            const roll = rollD20();
+            expect(roll).toBeGreaterThanOrEqual(1);
+            expect(roll).toBeLessThanOrEqual(20);
         });
     });
 
     describe('rollInitiative', () => {
-        it('should roll initiative within valid range', () => {
-            const modifier = 2;
-            const roll = rollInitiative(modifier);
-            
+        it('should roll normal initiative within valid range', () => {
+            const roll = rollInitiative(2);
             expect(roll).toBeGreaterThanOrEqual(3);  // 1 + 2
             expect(roll).toBeLessThanOrEqual(22);    // 20 + 2
         });
 
+        it('should handle advantage correctly', () => {
+            vi.spyOn(Math, 'random')
+                .mockReturnValueOnce(0.5)  // 11
+                .mockReturnValueOnce(0.75); // 16
+
+            const roll = rollInitiative(2, true);
+            expect(roll).toBe(18); // 16 + 2
+            vi.restoreAllMocks();
+        });
+
         it('should handle negative modifiers', () => {
-            const modifier = -2;
-            const roll = rollInitiative(modifier);
-            
-            expect(roll).toBeGreaterThanOrEqual(-1);  // 1 - 2
-            expect(roll).toBeLessThanOrEqual(18);     // 20 - 2
+            const roll = rollInitiative(-2);
+            expect(roll).toBeGreaterThanOrEqual(-1); // 1 - 2
+            expect(roll).toBeLessThanOrEqual(18);    // 20 - 2
         });
     });
 
-    describe('sortByInitiative', () => {
-        it('should sort combatants by initiative in descending order', () => {
-            const combatants = [
-                { name: 'A', initiative: 15 },
-                { name: 'B', initiative: 20 },
-                { name: 'C', initiative: 10 }
-            ];
+    describe('rollSpeedFactorInitiative', () => {
+        it('should calculate speed factor initiative correctly', () => {
+            vi.spyOn(Math, 'random').mockReturnValue(0.5); // 11
             
-            const sorted = sortByInitiative(combatants);
-            expect(sorted[0].initiative).toBe(20);
-            expect(sorted[1].initiative).toBe(15);
-            expect(sorted[2].initiative).toBe(10);
+            const roll = rollSpeedFactorInitiative(2, 'LIGHT', 'MELEE');
+            expect(roll).toBe(15); // 11 + 2 (dex) + 2 (light weapon) + 0 (melee)
+            
+            vi.restoreAllMocks();
         });
 
-        it('should handle ties using dexterity modifier', () => {
-            const combatants = [
-                { name: 'A', initiative: 15, dexMod: 2 },
-                { name: 'B', initiative: 15, dexMod: 3 },
-                { name: 'C', initiative: 15, dexMod: 1 }
-            ];
+        it('should handle spell levels', () => {
+            vi.spyOn(Math, 'random').mockReturnValue(0.5); // 11
             
-            const sorted = sortByInitiative(combatants);
-            expect(sorted[0].dexMod).toBe(3);
-            expect(sorted[1].dexMod).toBe(2);
-            expect(sorted[2].dexMod).toBe(1);
+            const roll = rollSpeedFactorInitiative(2, 'NORMAL', 'SPELL', 3);
+            expect(roll).toBe(10); // 11 + 2 (dex) + 0 (normal weapon) - 3 (level 3 spell)
+            
+            vi.restoreAllMocks();
         });
     });
 
-    describe('addCombatant', () => {
-        it('should add combatant to state', () => {
-            const state = createCombatState();
-            const { newState } = addCombatant(state, {
+    describe('createCombatant', () => {
+        it('should create a combatant with default values', () => {
+            const combatant = createCombatant('Fighter', 15);
+            expect(combatant).toEqual({
                 name: 'Fighter',
                 initiative: 15,
-                dexMod: 2
+                dexMod: 0,
+                type: 'PC',
+                conditions: [],
             });
-            
+        });
+
+        it('should create a combatant with custom values', () => {
+            const combatant = createCombatant('Goblin', 12, -1, 'NPC');
+            expect(combatant).toEqual({
+                name: 'Goblin',
+                initiative: 12,
+                dexMod: -1,
+                type: 'NPC',
+                conditions: [],
+            });
+        });
+    });
+
+    describe('Combat Management', () => {
+        let state;
+
+        beforeEach(() => {
+            state = createCombatState();
+        });
+
+        it('should add combatants correctly', () => {
+            const { newState } = addCombatant(state, createCombatant('Fighter', 15));
             expect(newState.combatants).toHaveLength(1);
             expect(newState.combatants[0].name).toBe('Fighter');
         });
 
-        it('should maintain initiative order when adding multiple combatants', () => {
-            let state = createCombatState();
-            const combatants = [
-                { name: 'A', initiative: 10 },
-                { name: 'B', initiative: 20 },
-                { name: 'C', initiative: 15 }
-            ];
-
-            for (const c of combatants) {
-                const { newState } = addCombatant(state, c);
-                state = newState;
-            }
-
-            expect(state.combatants[0].initiative).toBe(20);
-            expect(state.combatants[1].initiative).toBe(15);
-            expect(state.combatants[2].initiative).toBe(10);
-        });
-    });
-
-    describe('removeCombatant', () => {
-        it('should remove combatant from state', () => {
-            let state = createCombatState();
-            const { newState: stateWithCombatant } = addCombatant(state, {
-                name: 'Fighter',
-                initiative: 15
-            });
-            
-            const { newState } = removeCombatant(stateWithCombatant, 'Fighter');
+        it('should remove combatants correctly', () => {
+            let { newState } = addCombatant(state, createCombatant('Fighter', 15));
+            newState = removeCombatant(newState, 'Fighter').newState;
             expect(newState.combatants).toHaveLength(0);
         });
 
-        it('should handle removing non-existent combatant', () => {
-            const state = createCombatState();
-            const { newState } = removeCombatant(state, 'NonExistent');
-            expect(newState).toEqual(state);
+        it('should sort combatants by initiative', () => {
+            const combatants = [
+                createCombatant('A', 15),
+                createCombatant('B', 20),
+                createCombatant('C', 10),
+            ];
+            const sorted = sortCombatants(combatants);
+            expect(sorted[0].name).toBe('B');
+            expect(sorted[2].name).toBe('C');
         });
-    });
 
-    describe('advanceRound', () => {
-        it('should increment round and reset turn order', () => {
-            let state = createCombatState();
-            state.round = 1;
-            state.currentTurn = 3;
+        it('should advance turns correctly', () => {
+            let { newState } = addCombatant(state, createCombatant('Fighter', 15));
+            newState = addCombatant(newState, createCombatant('Wizard', 12)).newState;
             
-            const { newState } = advanceRound(state);
-            expect(newState.round).toBe(2);
+            // First turn
             expect(newState.currentTurn).toBe(0);
+            expect(newState.round).toBe(1);
+            
+            // Next turn
+            newState = nextTurn(newState).newState;
+            expect(newState.currentTurn).toBe(1);
+            expect(newState.round).toBe(1);
+            
+            // Next turn (should wrap to next round)
+            newState = nextTurn(newState).newState;
+            expect(newState.currentTurn).toBe(0);
+            expect(newState.round).toBe(2);
         });
     });
 
-    describe('getCurrentTurn', () => {
-        it('should return current combatant', () => {
-            let state = createCombatState();
-            const { newState } = addCombatant(state, {
-                name: 'Fighter',
-                initiative: 15
-            });
-            
-            const current = getCurrentTurn(newState);
-            expect(current).toBeTruthy();
-            expect(current.name).toBe('Fighter');
+    describe('Condition Management', () => {
+        let state;
+
+        beforeEach(() => {
+            state = createCombatState();
+            state = addCombatant(state, createCombatant('Fighter', 15)).newState;
         });
 
-        it('should return null when no combatants', () => {
-            const state = createCombatState();
-            const current = getCurrentTurn(state);
-            expect(current).toBeNull();
+        it('should add conditions correctly', () => {
+            const { newState } = addCondition(state, 'Fighter', 'Poisoned', 3);
+            expect(newState.combatants[0].conditions).toContainEqual({
+                name: 'Poisoned',
+                duration: 3,
+            });
+        });
+
+        it('should remove conditions correctly', () => {
+            let { newState } = addCondition(state, 'Fighter', 'Poisoned', 3);
+            newState = removeCondition(newState, 'Fighter', 'Poisoned').newState;
+            expect(newState.combatants[0].conditions).toHaveLength(0);
+        });
+
+        it('should update condition durations', () => {
+            let { newState } = addCondition(state, 'Fighter', 'Poisoned', 2);
+            newState = updateConditions(newState).newState;
+            expect(newState.combatants[0].conditions[0].duration).toBe(1);
+            
+            newState = updateConditions(newState).newState;
+            expect(newState.combatants[0].conditions).toHaveLength(0);
+        });
+
+        it('should handle permanent conditions', () => {
+            const { newState } = addCondition(state, 'Fighter', 'Cursed', null);
+            expect(newState.combatants[0].conditions[0].duration).toBeNull();
+            
+            const updatedState = updateConditions(newState).newState;
+            expect(updatedState.combatants[0].conditions).toHaveLength(1);
         });
     });
 });
