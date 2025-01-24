@@ -2,8 +2,9 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';
-import { NPC_TEMPLATES, NPC_TRAITS } from '../data/npc-templates.js';
+import { NPC_TEMPLATES } from '../data/npc-templates.js';
 import { SOURCEBOOKS } from '../config/sourcebooks.js';
+import { NPC_TRAITS } from '../data/npc-traits.js';
 
 const getEnabledSourcebooks = () => {
     return Object.entries(SOURCEBOOKS)
@@ -34,12 +35,105 @@ const generateStats = () => ({
     charisma: rollAbilityScore()
 });
 
-const getRandomTrait = (category) => {
-    const traits = NPC_TRAITS[category];
-    return traits[Math.floor(Math.random() * traits.length)];
+export const generatePersonality = () => {
+    const backgrounds = Object.keys(NPC_TRAITS.PERSONALITY);
+    const background = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+    const alignments = Object.keys(NPC_TRAITS.IDEALS);
+    const alignment = alignments[Math.floor(Math.random() * alignments.length)];
+
+    return {
+        trait: NPC_TRAITS.PERSONALITY[background][Math.floor(Math.random() * NPC_TRAITS.PERSONALITY[background].length)],
+        ideal: NPC_TRAITS.IDEALS[alignment][Math.floor(Math.random() * NPC_TRAITS.IDEALS[alignment].length)],
+        bond: NPC_TRAITS.BONDS[Math.floor(Math.random() * NPC_TRAITS.BONDS.length)],
+        flaw: NPC_TRAITS.FLAWS[Math.floor(Math.random() * NPC_TRAITS.FLAWS.length)]
+    };
 };
 
-export const generateNPC = async () => {
+export const generateAppearance = (race = 'HUMAN') => {
+    const heightCategory = NPC_TRAITS.APPEARANCE.HEIGHT[race.toUpperCase()] || NPC_TRAITS.APPEARANCE.HEIGHT.HUMAN;
+    const height = heightCategory[Math.floor(Math.random() * heightCategory.length)];
+    const build = NPC_TRAITS.APPEARANCE.BUILD[Math.floor(Math.random() * NPC_TRAITS.APPEARANCE.BUILD.length)];
+    const features = NPC_TRAITS.APPEARANCE.FEATURES[Math.floor(Math.random() * NPC_TRAITS.APPEARANCE.FEATURES.length)];
+    const clothing = NPC_TRAITS.APPEARANCE.CLOTHING[Math.floor(Math.random() * NPC_TRAITS.APPEARANCE.CLOTHING.length)];
+
+    return {
+        height,
+        build,
+        features,
+        clothing,
+        description: `A ${height}, ${build} ${race.toLowerCase()} with ${features}, wearing ${clothing}.`
+    };
+};
+
+export const generateBackground = (location = null) => {
+    const locations = Object.keys(NPC_TRAITS.OCCUPATIONS);
+    const selectedLocation = location ? location.toUpperCase() : locations[Math.floor(Math.random() * locations.length)];
+
+    if (!NPC_TRAITS.OCCUPATIONS[selectedLocation]) {
+        throw new Error(`Invalid location: ${location}`);
+    }
+
+    const occupations = NPC_TRAITS.OCCUPATIONS[selectedLocation];
+    const occupation = occupations[Math.floor(Math.random() * occupations.length)];
+
+    return {
+        location: selectedLocation.toLowerCase(),
+        occupation,
+        description: `A ${occupation.toLowerCase()} from a ${selectedLocation.toLowerCase()}.`
+    };
+};
+
+export const generateMotivation = () => {
+    const primary = NPC_TRAITS.MOTIVATIONS.PRIMARY[Math.floor(Math.random() * NPC_TRAITS.MOTIVATIONS.PRIMARY.length)];
+    const secondary = NPC_TRAITS.MOTIVATIONS.SECONDARY[Math.floor(Math.random() * NPC_TRAITS.MOTIVATIONS.SECONDARY.length)];
+
+    return {
+        primary,
+        secondary,
+        description: `Motivated primarily by ${primary.toLowerCase()}, with a secondary desire to ${secondary.toLowerCase()}.`
+    };
+};
+
+export const generateNPC = (options = {}) => {
+    // Validate options
+    if (options.race && !NPC_TRAITS.APPEARANCE.HEIGHT[options.race.toUpperCase()]) {
+        throw new Error(`Invalid race: ${options.race}`);
+    }
+    if (options.gender && !['male', 'female', 'other'].includes(options.gender.toLowerCase())) {
+        throw new Error(`Invalid gender: ${options.gender}`);
+    }
+    if (options.location && !NPC_TRAITS.OCCUPATIONS[options.location.toUpperCase()]) {
+        throw new Error(`Invalid location: ${options.location}`);
+    }
+
+    const enabledBooks = getEnabledSourcebooks();
+    const templates = getAvailableTemplates(enabledBooks);
+    const template = options.template || templates[Math.floor(Math.random() * templates.length)].value;
+
+    // Generate NPC components
+    const personality = generatePersonality();
+    const appearance = generateAppearance(options.race);
+    const background = generateBackground(options.location);
+    const motivation = generateMotivation();
+    const stats = generateStats();
+
+    const npc = {
+        name: options.name || `NPC_${Math.floor(Math.random() * 1000)}`,
+        race: options.race || appearance.race || 'human',
+        gender: options.gender || ['male', 'female', 'other'][Math.floor(Math.random() * 3)],
+        template,
+        stats,
+        personality,
+        appearance,
+        background,
+        motivation,
+        sourcebooks: enabledBooks
+    };
+
+    return npc;
+};
+
+export const generateNPCWithPrompts = async (options = {}) => {
     // First, let user configure sourcebooks
     const { configureSourcebooks } = await inquirer.prompt({
         type: 'confirm',
@@ -58,7 +152,7 @@ export const generateNPC = async () => {
                 value: book.abbreviation,
                 checked: book.enabled
             })),
-            validate: (answer) => {
+            validate: answer => {
                 if (answer.length < 1) {
                     return 'You must select at least one sourcebook!';
                 }
@@ -66,84 +160,44 @@ export const generateNPC = async () => {
             }
         });
 
-        // Update sourcebook enabled status
         Object.keys(SOURCEBOOKS).forEach(key => {
             SOURCEBOOKS[key].enabled = selectedBooks.includes(key);
         });
     }
 
-    const enabledBooks = getEnabledSourcebooks();
+    const npc = generateNPC(options);
 
-    const questions = [
-        {
-            type: 'confirm',
-            name: 'randomize',
-            message: 'Would you like to randomize all NPC attributes?',
-            default: false
-        },
-        {
-            type: 'input',
-            name: 'name',
-            message: 'Enter NPC name:',
-            when: answers => !answers.randomize,
-            validate: input => input.length > 0 || 'Name cannot be empty'
-        },
-        {
-            type: 'list',
-            name: 'template',
-            message: 'Choose NPC template:',
-            choices: getAvailableTemplates(enabledBooks),
-            when: answers => !answers.randomize
-        }
-    ];
-
-    let answers = await inquirer.prompt(questions);
-    const stats = generateStats();
-
-    if (answers.randomize) {
-        const availableTemplates = getAvailableTemplates(enabledBooks);
-        answers = {
-            name: 'NPC_' + Math.floor(Math.random() * 1000),
-            template: availableTemplates[Math.floor(Math.random() * availableTemplates.length)].value
-        };
-    }
-
-    // Generate personality traits
-    const traits = {
-        personality: getRandomTrait('PERSONALITY'),
-        ideal: getRandomTrait('IDEALS'),
-        bond: getRandomTrait('BONDS'),
-        flaw: getRandomTrait('FLAWS'),
-        mannerism: getRandomTrait('MANNERISMS')
-    };
-
-    const npc = {
-        ...answers,
-        stats,
-        traits,
-        sourcebooks: enabledBooks
-    };
-
+    // Display NPC
     console.log(chalk.green('\nNPC Generated!'));
-    console.log(chalk.yellow('\nNPC Details:'));
+    console.log(chalk.yellow('\nBasic Information:'));
     console.log(chalk.blue('Name:'), npc.name);
-    console.log(chalk.blue('Template:'), `${npc.template.name} (${npc.template.source})`);
-    console.log(chalk.blue('Category:'), npc.template.category);
-    console.log(chalk.blue('CR:'), npc.template.cr);
-    console.log(chalk.blue('Type:'), npc.template.type);
+    console.log(chalk.blue('Race:'), npc.race);
+    console.log(chalk.blue('Gender:'), npc.gender);
+    console.log(chalk.blue('Template:'), `${npc.template.name} (${npc.template.source} - CR ${npc.template.cr})`);
+
+    console.log(chalk.yellow('\nAppearance:'));
+    console.log(npc.appearance.description);
 
     console.log(chalk.yellow('\nPersonality:'));
-    console.log(chalk.blue('Personality Trait:'), npc.traits.personality);
-    console.log(chalk.blue('Ideal:'), npc.traits.ideal);
-    console.log(chalk.blue('Bond:'), npc.traits.bond);
-    console.log(chalk.blue('Flaw:'), npc.traits.flaw);
-    console.log(chalk.blue('Mannerism:'), npc.traits.mannerism);
+    console.log(chalk.blue('Trait:'), npc.personality.trait);
+    console.log(chalk.blue('Ideal:'), npc.personality.ideal);
+    console.log(chalk.blue('Bond:'), npc.personality.bond);
+    console.log(chalk.blue('Flaw:'), npc.personality.flaw);
+
+    console.log(chalk.yellow('\nBackground:'));
+    console.log(npc.background.description);
+
+    console.log(chalk.yellow('\nMotivation:'));
+    console.log(npc.motivation.description);
 
     console.log(chalk.yellow('\nAbility Scores:'));
     Object.entries(npc.stats).forEach(([ability, score]) => {
         const modifier = Math.floor((score - 10) / 2);
-        console.log(chalk.blue(ability.charAt(0).toUpperCase() + ability.slice(1) + ':'),
-            score, chalk.yellow(`(${modifier >= 0 ? '+' : ''}${modifier})`));
+        console.log(
+            chalk.blue(ability.charAt(0).toUpperCase() + ability.slice(1) + ':'),
+            score,
+            chalk.yellow(`(${modifier >= 0 ? '+' : ''}${modifier})`)
+        );
     });
 
     const { saveNPC } = await inquirer.prompt({
@@ -156,25 +210,35 @@ export const generateNPC = async () => {
     if (saveNPC) {
         const filename = `${npc.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`;
         const filepath = path.join(process.cwd(), 'npcs', filename);
-        
+
         await fs.ensureDir(path.join(process.cwd(), 'npcs'));
-        
+
         const npcData = `
-D&D NPC Sheet
-------------
+Dungeons & Dragons NPC Sheet
+------------------
 Name: ${npc.name}
-Template: ${npc.template.name} (${npc.template.source})
-Category: ${npc.template.category}
-CR: ${npc.template.cr}
-Type: ${npc.template.type}
+Race: ${npc.race}
+Gender: ${npc.gender}
+Template: ${npc.template.name} (${npc.template.source} - CR ${npc.template.cr})
+
+Appearance
+---------
+${npc.appearance.description}
 
 Personality
 ----------
-Personality Trait: ${npc.traits.personality}
-Ideal: ${npc.traits.ideal}
-Bond: ${npc.traits.bond}
-Flaw: ${npc.traits.flaw}
-Mannerism: ${npc.traits.mannerism}
+Trait: ${npc.personality.trait}
+Ideal: ${npc.personality.ideal}
+Bond: ${npc.personality.bond}
+Flaw: ${npc.personality.flaw}
+
+Background
+---------
+${npc.background.description}
+
+Motivation
+---------
+${npc.motivation.description}
 
 Ability Scores
 -------------
@@ -202,6 +266,10 @@ ${npc.sourcebooks.join(', ')}
     });
 
     if (generateAnother) {
-        await generateNPC();
+        await generateNPCWithPrompts();
     }
+
+    return npc;
 };
+
+export default generateNPCWithPrompts;

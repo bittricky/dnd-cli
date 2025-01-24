@@ -45,6 +45,7 @@ describe('NPC Generation', () => {
             expect(appearance).toHaveProperty('build');
             expect(appearance).toHaveProperty('features');
             expect(appearance).toHaveProperty('clothing');
+            expect(appearance).toHaveProperty('description');
             
             Object.values(appearance).forEach(detail => {
                 expect(typeof detail).toBe('string');
@@ -56,8 +57,8 @@ describe('NPC Generation', () => {
             const elfAppearance = generateAppearance('elf');
             const dwarfAppearance = generateAppearance('dwarf');
             
-            // Race-specific features should be different
-            expect(elfAppearance.features).not.toBe(dwarfAppearance.features);
+            // Race-specific heights should be different
+            expect(elfAppearance.height).not.toBe(dwarfAppearance.height);
         });
     });
 
@@ -65,13 +66,13 @@ describe('NPC Generation', () => {
         it('should generate valid background information', () => {
             const background = generateBackground();
             
+            expect(background).toHaveProperty('location');
             expect(background).toHaveProperty('occupation');
-            expect(background).toHaveProperty('history');
-            expect(background).toHaveProperty('alignment');
+            expect(background).toHaveProperty('description');
             
+            expect(typeof background.location).toBe('string');
             expect(typeof background.occupation).toBe('string');
-            expect(typeof background.history).toBe('string');
-            expect(typeof background.alignment).toBe('string');
+            expect(typeof background.description).toBe('string');
         });
 
         it('should generate appropriate occupations for location', () => {
@@ -87,8 +88,8 @@ describe('NPC Generation', () => {
             const motivation = generateMotivation();
             
             expect(motivation).toHaveProperty('primary');
-            expect(motivation).toHaveProperty('method');
-            expect(motivation).toHaveProperty('obstacle');
+            expect(motivation).toHaveProperty('secondary');
+            expect(motivation).toHaveProperty('description');
             
             Object.values(motivation).forEach(detail => {
                 expect(typeof detail).toBe('string');
@@ -103,8 +104,7 @@ describe('NPC Generation', () => {
             // At least one aspect should be different
             expect(
                 motivation1.primary !== motivation2.primary ||
-                motivation1.method !== motivation2.method ||
-                motivation1.obstacle !== motivation2.obstacle
+                motivation1.secondary !== motivation2.secondary
             ).toBe(true);
         });
     });
@@ -116,14 +116,18 @@ describe('NPC Generation', () => {
             expect(npc).toHaveProperty('name');
             expect(npc).toHaveProperty('race');
             expect(npc).toHaveProperty('gender');
-            expect(npc).toHaveProperty('appearance');
+            expect(npc).toHaveProperty('template');
+            expect(npc).toHaveProperty('stats');
             expect(npc).toHaveProperty('personality');
+            expect(npc).toHaveProperty('appearance');
             expect(npc).toHaveProperty('background');
             expect(npc).toHaveProperty('motivation');
+            expect(npc).toHaveProperty('sourcebooks');
             
             expect(typeof npc.name).toBe('string');
             expect(typeof npc.race).toBe('string');
             expect(typeof npc.gender).toBe('string');
+            expect(Array.isArray(npc.sourcebooks)).toBe(true);
         });
 
         it('should respect provided options', () => {
@@ -143,6 +147,7 @@ describe('NPC Generation', () => {
         it('should handle invalid options', () => {
             expect(() => generateNPC({ race: 'invalid_race' })).toThrow();
             expect(() => generateNPC({ gender: 'invalid_gender' })).toThrow();
+            expect(() => generateNPC({ location: 'invalid_location' })).toThrow();
         });
     });
 });
