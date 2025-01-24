@@ -1,0 +1,75 @@
+{
+  "name": "Custom Loot Table Example",
+  "description": "This is an example of a custom loot table that can be used with the D&D CLI tool",
+  "individual_treasure": {
+    "CR_0_4": [
+      {
+        "range": [1, 30],
+        "coins": { "cp": "5d6" }
+      },
+      {
+        "range": [31, 60],
+        "coins": { "sp": "4d6" }
+      }
+    ]
+  },
+  "hoard_treasure": {
+    "CR_0_4": {
+      "coins": {
+        "cp": "6d6 × 100",
+        "sp": "3d6 × 100",
+        "gp": "2d6 × 10"
+      },
+      "gems_art": [
+        {
+          "range": [1, 6],
+          "items": []
+        },
+        {
+          "range": [7, 16],
+          "items": [
+            {
+              "type": "gem",
+              "value": 10,
+              "count": "2d6"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "gems": {
+    "10": [
+      "Custom gem 1 (10gp)",
+      "Custom gem 2 (10gp)"
+    ],
+    "50": [
+      "Custom gem 3 (50gp)",
+      "Custom gem 4 (50gp)"
+    ]
+  },
+  "art_objects": {
+    "25": [
+      "Custom art object 1 (25gp)",
+      "Custom art object 2 (25gp)"
+    ],
+    "250": [
+      "Custom art object 3 (250gp)",
+      "Custom art object 4 (250gp)"
+    ]
+  },
+  "magic_items": {
+    "A": [
+      {
+        "range": [1, 50],
+        "item": "Custom magic item 1",
+        "source": "Custom Source"
+      },
+      {
+        "range": [51, 100],
+        "item": "Custom magic item 2",
+        "source": "Custom Source"
+      }
+    ]
+  }
+}
