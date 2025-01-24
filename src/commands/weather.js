@@ -30,12 +30,12 @@ async function selectSeason(climate) {
     return season;
 }
 
-function rollTemperature(climate, season) {
+export function rollTemperature(climate, season) {
     const range = climate.temperatureRange[season];
     return Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
 }
 
-function rollPrecipitation() {
+export function rollPrecipitation() {
     const roll = Math.random() * 100;
     if (roll < 40) return PRECIPITATION.NONE;
     if (roll < 65) return PRECIPITATION.LIGHT;
@@ -44,7 +44,7 @@ function rollPrecipitation() {
     return PRECIPITATION.SEVERE;
 }
 
-function rollWind() {
+export function rollWind() {
     const roll = Math.random() * 100;
     if (roll < 30) return WIND.CALM;
     if (roll < 60) return WIND.LIGHT;
@@ -53,7 +53,7 @@ function rollWind() {
     return WIND.SEVERE;
 }
 
-function rollSpecialEvent(climate) {
+export function rollSpecialEvent(climate) {
     const roll = Math.random() * 100;
     if (roll < 85) return null;  // 85% chance of no special event
     
@@ -61,7 +61,7 @@ function rollSpecialEvent(climate) {
     return events[Math.floor(Math.random() * events.length)];
 }
 
-function rollSeasonalEvent(season) {
+export function rollSeasonalEvent(season) {
     const roll = Math.random() * 100;
     if (roll < 90) return null;  // 90% chance of no seasonal event
     
@@ -69,7 +69,7 @@ function rollSeasonalEvent(season) {
     return events ? events[Math.floor(Math.random() * events.length)] : null;
 }
 
-function generateWeather(climate, season) {
+export function generateWeather(climate, season) {
     return {
         temperature: rollTemperature(climate, season),
         precipitation: rollPrecipitation(),
